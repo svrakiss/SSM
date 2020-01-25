@@ -1,0 +1,45 @@
+1/12/20
++ 7 hours trying to get demos to work.
+1/13/20
+1 hour still trying to get ros with realsense to work.
+Intel: They actually moved it to a side project. 
+ 
+https://support.intelrealsense.com/hc/en-us/community/posts/360033595714-D435-USB-connection-issues
+Contains info about connecting realsense cameras to ethernet and the problems when using cheap usb cables
+
+1/14/20
+3 hours working on fixing realsense bugs (usb driver issues in ros, tried to get a torch2trt example 
+1/15/20 
+7 hours 35 min 
++2 hours 22 min
+1/16/20
++44 min 
+1/17/20
+1 hour 35 min 
+Figuring out how to transfer openpose params to trt_pose example. This is so that we don't have to rely on installing openpose or ros.
+Note: Jetson Xavier clocked 1k+ fps running a Pytorch model optimized using torch2trt. 
++3 hour 50 min 
+Openpose automatically pads and resizes the input image to match the resolution of the network. AND it scales the heatmaps back to the original image.
+That is necessary for this situation.
+Going to use lightnet to **letterbox** input (resize & pad image while preserving aspect ratio)
+1/18/20
++ 1 hour 21 min
+Timer that shuts down pipeline and closes opencv display works now.
+Confirmed that images are being letterboxed. Next step is to figure out how to rescale the heatmaps and part affinity fields.
++3 hours and 9 minutes
+Isaac works and I figured out how to get it to scale the images, preserve the aspect ratio, and rescale the keypoints to the original resolution
+
+
+1/19/20
++ 1 hour 20 min
+Task at hand: Take in Skeleton2ListProto and aligned depth image, output Skeleton3ListProto.
+I need to create a codelet that does this. Not immediately clear what I should be doing. Add at least 4 hours to the development time because bazel needs to compile a new library.
++ 1hour 13 min
+Unable to view ISAAC source code, so this will be more difficult. Saw another solution from LIPS that incorporates skeleton tracking and localization with the realsense. Support for the ISAAC is on their github page github.com/lips-hci/stereo_ae400 for their industrial grade realsense camera. Note their camera case has IP67 rated protection.
+
++ 50 min
+Found support for Openni2 on jetson nano and ubuntu 18 (on structure.io)
+Note: Librealsense cannot be installed on VMware Workstation 15 Player. Libglfw3 cannot be installed. Next step would be to dualboot the computer.
+Going to make a github repo for code to make it portable.
++ 1 hour 37 min
+Thinking about how a 
