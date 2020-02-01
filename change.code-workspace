@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "/home/nvidia/git/trt_pose/tasks"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "/usr/bin/python"
+	}
+}

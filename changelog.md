@@ -92,35 +92,35 @@ order of commands
  2017  sudo apt-get install ros-melodic-librealsense2
 ## even though ddynamic-reconfigure is a package in this workspace, i installed it through apt-get
 ## i installed ros-melodic-librealsense2 previously but saw no improvement, at this point I'm just doing it to get rosdep to return "all deps installed"
- 2020  roslaunch src/kolt_ros/launch/k_rs_camera.launch 
- 2021  catkin build
- 2022  . devel/setup.bash
- 2023  . install/setup.bash
- 2024  roslaunch src/kolt_ros/launch/k_rs_camera.launch
+ 	roslaunch src/kolt_ros/launch/k_rs_camera.launch 
+ 	catkin build
+ 	source devel/setup.bash
+ 	source install/setup.bash
+ 	roslaunch src/kolt_ros/launch/k_rs_camera.launch
 	catkin config --install
 ## At this point it is clear that somehow, ~/catkin_build_ws/install/share/kolt/launch isn't being created
 	cd src/kolt_ros/
 	vim CMakeLists.txt
 
 ## Add this to CMakeLists.txt:
-install(DIRECTORY launch/
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-    )
+	install(DIRECTORY launch/
+    	DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+    	)
 ## and add python scripts to install to line 108
-catkin_install_python(PROGRAMS scripts/yolo_predict.py scripts/yolo_server.py   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+	catkin_install_python(PROGRAMS scripts/yolo_predict.py scripts/yolo_server.py   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
- 2056  catkin build
- 2077  roslaunch kolt k_rs_camera.launch 
+ 	catkin build
+ 	roslaunch kolt k_rs_camera.launch 
 ## vision_pose crashes from python2-compiled files.
- 2083  cd ~/catkin_ws
- rm -rf build
- rm -rf devel
- cd src
+ 	cd ~/catkin_ws
+	rm -rf build
+	rm -rf devel
+	cd src
 ## remove duplicate packages installed in this workspace
- rm -rf kolt_ros
- rm -rf ros_python3_issues
- rm -rf vision_msgs
- cd ..
+	rm -rf kolt_ros
+	rm -rf ros_python3_issues
+	rm -rf vision_msgs
+	cd ..
 ## follow instructions from https://answers.ros.org/question/326226/importerror-dynamic-module-does-not-define-module-export-function-pyinit__tf2/
  2092  catkin_make
  2093  . devel/setup.bash
@@ -190,3 +190,30 @@ catkin_install_python(PROGRAMS scripts/yolo_predict.py scripts/yolo_server.py   
 # 1/27/20
 ## 45 minutes
 	Writing log for yesterday
+## 7 hours 11 min
+	Fixed tensorrt cuda error. Started cuda context and constructed trtyolov3 at the start of every call to _handle_yolo_detect, then deleted them at the end. it works as far as getting vision_poses published, bearings calculated, and bounding boxes published, but yolo_Server crashes without warning after less than 10 calls.
+# 1/29/20
+	forum post about this topic: https://devtalk.nvidia.com/default/topic/1056268/tensorrt/tensorrt-do_inference-error/1
+
+	https://github.com/jkjung-avt/tensorrt_demos/blob/master/trt_ssd_async.py
+
+	https://jkjung-avt.github.io/speed-up-trt-ssd/
+	
+	https://devtalk.nvidia.com/default/topic/1064310/tensorrt/adding-multiple-inference-on-tensorrt-invalid-resource-handle-error-/
+
+	https://docs.nvidia.com/deeplearning/sdk/tensorrt-archived/tensorrt-601/tensorrt-best-practices/index.html#thread-safety
+
+# 2/1/20
++ I removed the hdmi connection from the jetson to save RAM. Without a display connected there may be a resolution issue when accessing the nano from vnc (too small) i appended this to /etc/X11/xorg.conf :
+	Section "Screen"
+     Identifier    "Default Screen"
+     Monitor       "Configured Monitor"
+     Device        "Tegra0"
+     SubSection "Display"
+         Depth    24
+         Virtual 1280 800 # Modify the resolution by editing these values
+     EndSubSection
+    EndSection
+
++ credit to https://devtalk.nvidia.com/default/topic/1069710/jetson-nano/headless-jetson-nano-capabilities/ for the solution
+	
