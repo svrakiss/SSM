@@ -191,17 +191,19 @@ order of commands
 ## 45 minutes
 	Writing log for yesterday
 ## 7 hours 11 min
-	Fixed tensorrt cuda error. Started cuda context and constructed trtyolov3 at the start of every call to _handle_yolo_detect, then deleted them at the end. it works as far as getting vision_poses published, bearings calculated, and bounding boxes published, but yolo_Server crashes without warning after less than 10 calls.
++ Fixed tensorrt cuda error. Started cuda context and constructed trtyolov3 at the start of every call to _handle_yolo_detect, then deleted them at the end. it works as far as getting vision_poses published, bearings calculated, and bounding boxes published, but yolo_Server crashes without warning after less than 10 calls.
 # 1/29/20
-	forum post about this topic: https://devtalk.nvidia.com/default/topic/1056268/tensorrt/tensorrt-do_inference-error/1
-
-	https://github.com/jkjung-avt/tensorrt_demos/blob/master/trt_ssd_async.py
-
-	https://jkjung-avt.github.io/speed-up-trt-ssd/
++ forum post about this topic: https://devtalk.nvidia.com/default/topic/1056268/tensorrt/tensorrt-do_inference-error/1
++ implementation of asynchronous inference https://github.com/jkjung-avt/tensorrt_demos/blob/master/trt_ssd_async.py
++ link to jkjung's blog post about this https://jkjung-avt.github.io/speed-up-trt-ssd/
 	
-	https://devtalk.nvidia.com/default/topic/1064310/tensorrt/adding-multiple-inference-on-tensorrt-invalid-resource-handle-error-/
++ another instance of this issue https://devtalk.nvidia.com/default/topic/1064310/tensorrt/adding-multiple-inference-on-tensorrt-invalid-resource-handle-error-/
 
-	https://docs.nvidia.com/deeplearning/sdk/tensorrt-archived/tensorrt-601/tensorrt-best-practices/index.html#thread-safety
++ Thread safety tensorrt documentation (not extremely helpful tbh) https://docs.nvidia.com/deeplearning/sdk/tensorrt-archived/tensorrt-601/tensorrt-best-practices/index.html#thread-safety
+
++ I spent roughly 3 hours playing with yolo_server.py to get the inference to work without constructing the inference engine at every request to predict. It only worked when requests came from within its own context (i.e. before rospy::Service::spin() is called).
+
++ I modeled my incomplete solution of the examples in jkjung's repo.
 
 # 2/1/20
 + I removed the hdmi connection from the jetson to save RAM. Without a display connected there may be a resolution issue when accessing the nano from vnc (too small) i appended this to /etc/X11/xorg.conf :
